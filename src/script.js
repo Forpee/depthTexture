@@ -45,6 +45,14 @@ const material = new THREE.ShaderMaterial({
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
+
+let geometry1 = new THREE.PlaneBufferGeometry(1, 0.01, 100, 1)
+let number = 20
+// for (let i = 0; i < number; i++) {
+//     let mesh1 = new THREE.Mesh(geometry1, material)
+//     mesh1.position.y = (i-number/2)/number
+//     scene.add(mesh1)
+// }
 /**
  * Sizes
  */
@@ -52,6 +60,15 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
+// Target 
+
+let target = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight );
+target.texture.minFilter = THREE.NearestFilter;
+target.texture.magFilter = THREE.NearestFilter;
+target.stencilBuffer = ( format === THREE.DepthStencilFormat ) ? true : false;
+target.depthTexture = new THREE.DepthTexture();
+target.depthTexture.format = format;
+target.depthTexture.type = type;
 
 window.addEventListener('resize', () => {
     // Update sizes

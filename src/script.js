@@ -9,12 +9,26 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 /**
  * Base
  */
+/**
+ * Sizes
+ */
+ const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+}
 // GlTF loader 
 const loader = new GLTFLoader()
 loader.load('/model/scene.gltf', (gltf) => {
-    gltf.scene.scale.set(0.01, 0.01, 0.01)
-    gltf.scene.position.set(0, -0.2, -1)
-    scene.add(gltf.scene)
+    let model = gltf.scene
+    model.scale.set(0.03, 0.03, 0.03)
+    model.position.set(0, -0.5, -1.3)
+
+    model.traverse((child) => {
+        if (child.isMesh) {
+            child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+        }
+    })
+    scene.add(model)
 })
 // Debug
 const gui = new dat.GUI()
@@ -24,6 +38,10 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+// Base camera
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 3)
+camera.position.set(0, 0, 1.1)
+scene.add(camera)
 
 /**
  * Test mesh
@@ -35,7 +53,9 @@ const geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32)
 const material = new THREE.ShaderMaterial({
     uniforms: {
         uTime: { value: 0 },
-        depthInfo: { value: null }
+        depthInfo: { value: null },
+        cameraNear: { value: camera.near },
+        cameraFar: { value: camera.far },
     },
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
@@ -54,13 +74,7 @@ let number = 20
 //     mesh1.position.y = (i-number/2)/number
 //     scene.add(mesh1)
 // }
-/**
- * Sizes
- */
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
-}
+
 // Target 
 
 let target = new THREE.WebGLRenderTarget(sizes.width, sizes.height);
@@ -98,10 +112,6 @@ scene.add(directionalLight)
 // Orthographic camera
 // const camera = new THREE.OrthographicCamera(-1/2, 1/2, 1/2, -1/2, 0.1, 100)
 
-// Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0, 0, 2)
-scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -115,7 +125,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
+renderer.setClearColor(0xffffff, 1)
 /**
  * Animate
  */

@@ -39,8 +39,12 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 // Base camera
+
+// Orthographic camera
+// const camera = new THREE.OrthographicCamera(-1/2, 1/2, 1/2, -1/2, 1, 4)
+
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 3)
-camera.position.set(0, 0, 1.1)
+camera.position.set(0, 0, 1.7)
 scene.add(camera)
 
 /**
@@ -64,16 +68,22 @@ const material = new THREE.ShaderMaterial({
 
 // Mesh
 const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+// scene.add(mesh)
 
 
-let geometry1 = new THREE.PlaneBufferGeometry(1, 0.01, 100, 1)
-let number = 20
-// for (let i = 0; i < number; i++) {
-//     let mesh1 = new THREE.Mesh(geometry1, material)
-//     mesh1.position.y = (i-number/2)/number
-//     scene.add(mesh1)
-// }
+let geometry1 = new THREE.PlaneBufferGeometry(2, 0.005, 100, 1)
+let number = 100
+for (let i = 0; i <= number; i++) {
+    let y =[]
+    let len = geometry1.attributes.position.array.length
+    for (let j = 0; j < len/3; j++) {
+        y.push(i/100)
+    }
+    geometry1.setAttribute('y', new THREE.Float32BufferAttribute(y, 1))
+    let mesh1 = new THREE.Mesh(geometry1, material)
+    mesh1.position.y = (i-50)/50
+    scene.add(mesh1)
+}
 
 // Target 
 

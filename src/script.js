@@ -12,20 +12,21 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 /**
  * Sizes
  */
- const sizes = {
+const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
 // GlTF loader 
+let model;
 const loader = new GLTFLoader()
 loader.load('/model/scene.gltf', (gltf) => {
-    let model = gltf.scene
+    model = gltf.scene
     model.scale.set(0.03, 0.03, 0.03)
     model.position.set(0, -0.5, -1.3)
 
     model.traverse((child) => {
         if (child.isMesh) {
-            child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+            child.material = new THREE.MeshBasicMaterial({ color: 0x000000 })
         }
     })
     scene.add(model)
@@ -71,17 +72,18 @@ const mesh = new THREE.Mesh(geometry, material)
 // scene.add(mesh)
 
 
-let geometry1 = new THREE.PlaneBufferGeometry(2, 0.005, 100, 1)
 let number = 100
 for (let i = 0; i <= number; i++) {
-    let y =[]
+    let geometry1 = new THREE.PlaneBufferGeometry(2, 0.005, 100, 1)
+
+    let y = []
     let len = geometry1.attributes.position.array.length
-    for (let j = 0; j < len/3; j++) {
-        y.push(i/100)
+    for (let j = 0; j < len / 3; j++) {
+        y.push(i / 100)
     }
-    geometry1.setAttribute('y', new THREE.Float32BufferAttribute(y, 1))
+    geometry1.setAttribute('y', new THREE.BufferAttribute(new Float32Array(y), 1))
     let mesh1 = new THREE.Mesh(geometry1, material)
-    mesh1.position.y = (i-50)/50
+    mesh1.position.y = (i - 50) / 50
     scene.add(mesh1)
 }
 
@@ -135,7 +137,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-renderer.setClearColor(0xffffff, 1)
+// renderer.setClearColor(0xffffff, 1)
 /**
  * Animate
  */
@@ -144,9 +146,13 @@ const clock = new THREE.Clock()
 const tick = () => {
     // Update controls
     controls.update()
-
+  
     // Get elapsedtime
     const elapsedTime = clock.getElapsedTime()
+    if(model){
+        model.position.z = -1.5+ 0.25*Math.sin(elapsedTime)
+        model.rotation.y = -0.1+0.25*Math.cos(elapsedTime)
+    }
 
     // Update uniforms
     material.uniforms.uTime.value = elapsedTime

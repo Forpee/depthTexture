@@ -62,12 +62,12 @@ const sizes = {
 }
 // Target 
 
-let target = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight );
+let target = new THREE.WebGLRenderTarget( sizes.width, sizes.height );
 target.texture.minFilter = THREE.NearestFilter;
 target.texture.magFilter = THREE.NearestFilter;
-target.stencilBuffer = ( format === THREE.DepthStencilFormat ) ? true : false;
+target.stencilBuffer =false;
 target.depthTexture = new THREE.DepthTexture();
-target.depthTexture.format = format;
+target.depthTexture.format = THREE.UnsignedShortType;
 target.depthTexture.type = type;
 
 window.addEventListener('resize', () => {

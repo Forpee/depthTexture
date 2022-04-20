@@ -68,8 +68,8 @@ target.texture.minFilter = THREE.NearestFilter;
 target.texture.magFilter = THREE.NearestFilter;
 target.stencilBuffer = false;
 target.depthTexture = new THREE.DepthTexture();
-target.depthTexture.format = THREE.UnsignedShortType;
-target.depthTexture.type = THREE.DepthFormat;
+target.depthTexture.format = THREE.DepthFormat;
+target.depthTexture.type = THREE.UnsignedShortType;
 
 window.addEventListener('resize', () => {
     // Update sizes
@@ -130,10 +130,12 @@ const tick = () => {
 
     // Update uniforms
     material.uniforms.uTime.value = elapsedTime
-    material.uniforms.depthInfo.value = target.depthTexture
 
     // Render
     renderer.setRenderTarget(target)
+    renderer.render(scene, camera)
+    material.uniforms.depthInfo.value = target.depthTexture
+    renderer.setRenderTarget(null)
     renderer.render(scene, camera)
 
     // Call tick again on the next frame

@@ -35,6 +35,7 @@ const geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32)
 const material = new THREE.ShaderMaterial({
     uniforms: {
         uTime: { value: 0 },
+        depthInfo: { value: null }
     },
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
@@ -62,13 +63,13 @@ const sizes = {
 }
 // Target 
 
-let target = new THREE.WebGLRenderTarget( sizes.width, sizes.height );
+let target = new THREE.WebGLRenderTarget(sizes.width, sizes.height);
 target.texture.minFilter = THREE.NearestFilter;
 target.texture.magFilter = THREE.NearestFilter;
-target.stencilBuffer =false;
+target.stencilBuffer = false;
 target.depthTexture = new THREE.DepthTexture();
 target.depthTexture.format = THREE.UnsignedShortType;
-target.depthTexture.type = type;
+target.depthTexture.type = THREE.DepthFormat;
 
 window.addEventListener('resize', () => {
     // Update sizes
@@ -131,6 +132,7 @@ const tick = () => {
     material.uniforms.uTime.value = elapsedTime
 
     // Render
+    renderer.setRenderTarget(target)
     renderer.render(scene, camera)
 
     // Call tick again on the next frame

@@ -130,6 +130,7 @@ const tick = () => {
 
     // Update uniforms
     material.uniforms.uTime.value = elapsedTime
+    material.uniforms.depthInfo.value = target.depthTexture
 
     // Render
     renderer.setRenderTarget(target)
